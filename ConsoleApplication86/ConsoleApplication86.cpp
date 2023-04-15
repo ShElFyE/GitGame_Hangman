@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <ctime> 
 using namespace std;
 
 class Word {
@@ -31,11 +33,76 @@ public:
         }
         return true;
     }
-    bool guessedAt(int i) const { 
+    bool guessedAt(int i) const {
         return guessed_[i];
     }
     string getW() const {
         return wordG;
+    }
+};
+
+class HangmanShow { 
+public:
+    HangmanShow() {}
+    void gameViselits(int RemainAt) const {
+        cout << " ___" << "\n";
+        cout << "| |" << "\n";
+        if (RemainAt <= 6) {
+            cout << "| O" << "\n";
+        }
+        else {
+            cout << "|" << "\n";
+        }
+        if (RemainAt <= 5) {
+            if (RemainAt <= 4) {
+                cout << "| /";
+            }
+            else {
+                cout << "|  ";
+            }
+            if (RemainAt <= 3) {
+                cout << "\\" << "\n";
+            }
+            else {
+                cout << "|" << "\n";
+            }
+            if (RemainAt <= 2) {
+                cout << "|  /";
+            }
+            else {
+                cout << "|   ";
+            }
+            if (RemainAt == 1) {
+                cout << "\\" << "\n";
+            }
+            else if (RemainAt == 0) {
+                cout << "X" << "\n";
+            }
+            else {
+                cout << "|" << "\n";
+            }
+        }
+        cout << "=========" << "\n";
+    }
+
+    void Words(const Word& word) const {
+        cout << "Slovo: ";
+        for (int i = 0; i < word.getW().length(); i++) {
+            if (word.guessedAt(i)) {
+                cout << word.getW()[i] << " ";
+            }
+            else {
+                cout << "_ ";
+            }
+        }
+        cout << "\n";
+    }
+    void GuessedL(const vector<char>& guessedLetters) const {
+        cout << "Bukv vsego zagadano: ";
+        for (char letter : guessedLetters) {
+            cout << letter << " ";
+        }
+        cout << "\n";
     }
 };
 
@@ -47,10 +114,23 @@ private:
     vector<char> GuesssedLet;
 public:
     Hangman() : RemainingAt(6) {
-        srand(time(NULL));
+        srand(time(NULL)); 
+        ofstream file1("words.txt");
+        if (file1.is_open()) {
+            file1 << "kofein\n";
+            file1 << "moloko\n";
+            file1 << "sobaka\n";
+            file1 << "serdse\n";
+            file1 << "derevo\n";
+            file1.close();
+        }
+        else {
+            cerr << "Error creating file!\n";
+            exit(1);
+        }
         ifstream file("words.txt");
         if (!file.is_open()) {
-            cerr << "Error!" << "\n";
+            cerr << "Error!\n";
             exit(1);
         }
         string line;
@@ -93,56 +173,6 @@ public:
         else {
             cout << "Ups, vi proigrali, slovo bilo: " << wordG.getW() << "\n";
         }
-    }
-};
-
-class HangmanShow {
-public:
-    HangmanShow() {}
-    void gameViselits(int RemainAt) const {
-        cout << " ___" << "\n";
-        cout << "| |" << "\n";
-        if (RemainAt < 6) {
-            cout << "| O" << "\n";
-        }
-        else {
-            cout << "|" << "\n";
-        }
-        if (RemainAt < 5) {
-            if (RemainAt < 4) {
-                cout << "| /";
-            }
-            else {
-                cout << "| ";
-            }
-            if (RemainAt < 3) {
-                cout << "\\" << "\n";
-            }
-            else {
-                cout << "|" << "\n";
-            }
-            cout << "|" << "\n";
-            cout << "=========" << "\n";
-        }
-    }
-    void Words(const Word& word) const {
-        cout << "Slovo: ";
-        for (int i = 0; i < word.getW().length(); i++) {
-            if (word.guessedAt(i)) {
-                cout << word.getW()[i] << " ";
-            }
-            else {
-                cout << "_ ";
-            }
-        }
-        cout << "\n";
-    }
-    void GuessedL(const vector<char>& guessedLetters) const {
-        cout << "Bukv ugadali: ";
-        for (char letter : guessedLetters) {
-            cout << letter << " ";
-        }
-        cout << "\n";
     }
 };
 int main() {
